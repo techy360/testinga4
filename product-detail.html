@@ -79,21 +79,6 @@
         addToCartButton.dataset.itemName = selectedItem.item_name;
         addToCartButton.dataset.price = String(selectedItem.price);
 
-        window.dataLayer.push({
-            event: "view_item",
-            ecommerce: {
-                currency: "AUD",
-                value: 49.99,
-                items: [
-                    {
-                        item_id: "SKU-001",
-                        item_name: "Analytics T-Shirt",
-                        price: 49.99,
-                        quantity: 1
-                    }
-                ]
-            }
-        });
     </script>
 </body>
 
