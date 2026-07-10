@@ -19,15 +19,42 @@ function setupPageViewEvent() {
     });
 }
 
+function getItemFromElement(element) {
+    const itemId = element.dataset.itemId;
+    if (!itemId) {
+        return null;
+    }
+
+    return {
+        item_id: itemId,
+        item_name: element.dataset.itemName || 'Unknown Item',
+        price: Number(element.dataset.price || 0),
+        quantity: Number(element.dataset.quantity || 1)
+    };
+}
+
 function setupClickTracking() {
     const trackableElements = document.querySelectorAll('[data-track-click]');
 
     trackableElements.forEach((element) => {
         element.addEventListener('click', () => {
-            pushDataLayerEvent(element.dataset.eventName || 'custom_click', {
+            const eventName = element.dataset.eventName || 'custom_click';
+            const payload = {
                 event_category: element.dataset.eventCategory || 'interaction',
                 event_label: element.dataset.eventLabel || element.textContent.trim()
-            });
+            };
+
+            if (eventName === 'select_item') {
+                const item = getItemFromElement(element);
+                if (item) {
+                    payload.item_list_name = element.dataset.itemListName || 'Demo Product Listing';
+                    payload.items = [item];
+                    payload.currency = 'AUD';
+                    payload.value = item.price;
+                }
+            }
+
+            pushDataLayerEvent(eventName, payload);
         });
     });
 }
@@ -36,15 +63,17 @@ function setupEcommerceButtons() {
     const addToCartButton = document.querySelector('[data-add-to-cart]');
     if (addToCartButton) {
         addToCartButton.addEventListener('click', () => {
+            const item = getItemFromElement(addToCartButton) || {
+                item_id: 'SKU-001',
+                item_name: 'Analytics T-Shirt',
+                price: 49.99,
+                quantity: 1
+            };
+
             pushDataLayerEvent('add_to_cart', {
-                currency: 'USD',
-                value: 49.99,
-                items: [{
-                    item_id: 'SKU-001',
-                    item_name: 'Analytics T-Shirt',
-                    price: 49.99,
-                    quantity: 1
-                }]
+                currency: 'AUD',
+                value: item.price,
+                items: [item]
             });
         });
     }
@@ -53,7 +82,7 @@ function setupEcommerceButtons() {
     if (beginCheckoutButton) {
         beginCheckoutButton.addEventListener('click', () => {
             pushDataLayerEvent('begin_checkout', {
-                currency: 'USD',
+                currency: 'AUD',
                 value: 49.99
             });
         });
@@ -65,7 +94,7 @@ function setupEcommerceButtons() {
             pushDataLayerEvent('purchase', {
                 transaction_id: `ORDER-${Date.now()}`,
                 value: 49.99,
-                currency: 'USD'
+                currency: 'AUD'
             });
         });
     }

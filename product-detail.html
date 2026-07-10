@@ -38,12 +38,13 @@
 
     <main class="container">
         <section class="card">
-            <h2>Analytics T-Shirt</h2>
-            <p>Soft cotton t-shirt for analytics engineers.</p>
-            <p class="price">$49.99</p>
+            <h2 id="pdp-item-name">Analytics T-Shirt</h2>
+            <p id="pdp-item-description">Soft cotton t-shirt for analytics engineers.</p>
+            <p class="price" id="pdp-item-price">$49.99</p>
             <div class="info-row">
-                <button data-add-to-cart data-track-click data-event-name="add_to_cart_click" data-event-category="ecommerce"
-                    data-event-label="pdp_add_to_cart">Add to Cart</button>
+                <button id="pdp-add-to-cart" data-add-to-cart data-track-click data-event-name="add_to_cart_click"
+                    data-event-category="ecommerce" data-event-label="pdp_add_to_cart" data-item-id="SKU-001"
+                    data-item-name="Analytics T-Shirt" data-price="49.99">Add to Cart</button>
                 <a class="button secondary" href="cart.html" data-track-click data-event-name="go_to_cart"
                     data-event-category="navigation" data-event-label="pdp_to_cart">Go to Cart</a>
             </div>
@@ -53,11 +54,37 @@
     <script src="assets/analytics-events.js"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
+
+        const params = new URLSearchParams(window.location.search);
+        const selectedItem = {
+            item_id: params.get('item_id') || 'SKU-001',
+            item_name: params.get('item_name') || 'Analytics T-Shirt',
+            price: Number(params.get('price') || '49.99'),
+            description: params.get('description') || 'Soft cotton t-shirt for analytics engineers.'
+        };
+
+        const itemNameElement = document.getElementById('pdp-item-name');
+        const itemDescriptionElement = document.getElementById('pdp-item-description');
+        const itemPriceElement = document.getElementById('pdp-item-price');
+        const addToCartButton = document.getElementById('pdp-add-to-cart');
+
+        itemNameElement.textContent = selectedItem.item_name;
+        itemDescriptionElement.textContent = selectedItem.description;
+        itemPriceElement.textContent = `$${selectedItem.price.toFixed(2)}`;
+
+        addToCartButton.dataset.itemId = selectedItem.item_id;
+        addToCartButton.dataset.itemName = selectedItem.item_name;
+        addToCartButton.dataset.price = String(selectedItem.price);
+
         window.dataLayer.push({
             event: 'view_item',
-            currency: 'USD',
-            value: 49.99,
-            items: [{ item_id: 'SKU-001', item_name: 'Analytics T-Shirt', price: 49.99 }]
+            currency: 'AUD',
+            value: selectedItem.price,
+            items: [{
+                item_id: selectedItem.item_id,
+                item_name: selectedItem.item_name,
+                price: selectedItem.price
+            }]
         });
     </script>
 </body>
