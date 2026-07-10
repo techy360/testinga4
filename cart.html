@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics Learning Site | Home</title>
+    <title>Analytics Learning Site | Cart</title>
 
     <!-- Google Tag Manager -->
     <script>(function (w, d, s, l, i) {
@@ -20,15 +20,15 @@
     <link rel="stylesheet" href="assets/styles.css">
 </head>
 
-<body data-page-name="home">
+<body data-page-name="cart">
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P33XB7GB" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
     <header class="container">
-        <h1>Analytics Learning Site</h1>
-        <p>Practice Google Analytics + Google Tag Manager with realistic ecommerce pages.</p>
+        <h1>Cart Page</h1>
+        <p class="breadcrumb">Home / Cart</p>
     </header>
 
     <nav class="container nav-links" aria-label="Main navigation">
@@ -40,37 +40,30 @@
         <a href="thank-you.html">Thank You</a>
     </nav>
 
-    <main class="container grid">
+    <main class="container">
         <section class="card">
-            <h2>Start Here</h2>
-            <p>Use these pages to configure custom events and inspect <strong>dataLayer</strong> pushes.</p>
-            <a class="button" href="product-list.html" data-track-click data-event-name="go_to_product_list"
-                data-event-category="navigation" data-event-label="home_to_plp">
-                Go to Product List
-            </a>
-        </section>
-
-        <section class="card">
-            <h2>Quick Test Button</h2>
-            <p>Use this for a simple click event while testing GTM triggers and tags.</p>
-            <button data-track-click data-event-name="home_test_button_click" data-event-category="engagement"
-                data-event-label="home_cta">Click Me!</button>
-        </section>
-
-        <section class="card">
-            <h2>Suggested Events</h2>
-            <ul>
-                <li>page_view per page</li>
-                <li>view_item_list on PLP</li>
-                <li>view_item on PDP</li>
-                <li>add_to_cart on PDP</li>
-                <li>begin_checkout on Cart</li>
-                <li>purchase on Thank You page</li>
-            </ul>
+            <h2>Your Cart</h2>
+            <p>1 x Analytics T-Shirt</p>
+            <p class="price">Total: $49.99</p>
+            <div class="info-row">
+                <a class="button secondary" href="product-list.html" data-track-click data-event-name="continue_shopping"
+                    data-event-category="ecommerce" data-event-label="cart_continue_shopping">Continue Shopping</a>
+                <a class="button" href="checkout.html" data-begin-checkout data-track-click
+                    data-event-name="begin_checkout_click" data-event-category="ecommerce"
+                    data-event-label="cart_to_checkout">Proceed to Checkout</a>
+            </div>
         </section>
     </main>
 
     <script src="assets/analytics-events.js"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: 'view_cart',
+            currency: 'USD',
+            value: 49.99
+        });
+    </script>
 </body>
 
 </html>

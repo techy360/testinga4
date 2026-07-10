@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Learning Site | Product List</title>
+
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-P33XB7GB');</script>
+    <!-- End Google Tag Manager -->
+
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body data-page-name="product_list">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P33XB7GB" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <header class="container">
+        <h1>Product List Page (PLP)</h1>
+        <p class="breadcrumb">Home / Product List</p>
+    </header>
+
+    <nav class="container nav-links" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="product-list.html">Product List</a>
+        <a href="product-detail.html">Product Detail (PDP)</a>
+        <a href="cart.html">Cart</a>
+        <a href="checkout.html">Checkout</a>
+        <a href="thank-you.html">Thank You</a>
+    </nav>
+
+    <main class="container product-list">
+        <article class="card">
+            <h2>Analytics T-Shirt</h2>
+            <p class="price">$49.99</p>
+            <a class="button" href="product-detail.html" data-track-click data-event-name="select_item"
+                data-event-category="ecommerce" data-event-label="analytics_tshirt">View Product</a>
+        </article>
+
+        <article class="card">
+            <h2>Tag Manager Mug</h2>
+            <p class="price">$19.99</p>
+            <a class="button secondary" href="product-detail.html" data-track-click data-event-name="select_item"
+                data-event-category="ecommerce" data-event-label="gtm_mug">View Product</a>
+        </article>
+
+        <article class="card">
+            <h2>GA4 Notebook</h2>
+            <p class="price">$12.50</p>
+            <a class="button secondary" href="product-detail.html" data-track-click data-event-name="select_item"
+                data-event-category="ecommerce" data-event-label="ga4_notebook">View Product</a>
+        </article>
+    </main>
+
+    <script src="assets/analytics-events.js"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: 'view_item_list',
+            item_list_name: 'Demo Product Listing',
+            items: [
+                { item_id: 'SKU-001', item_name: 'Analytics T-Shirt' },
+                { item_id: 'SKU-002', item_name: 'Tag Manager Mug' },
+                { item_id: 'SKU-003', item_name: 'GA4 Notebook' }
+            ]
+        });
+    </script>
+</body>
+
+</html>
