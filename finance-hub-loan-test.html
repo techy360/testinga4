@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finance Hub Loan GA4 Test App</title>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX', { debug_mode: true });
+  </script>
+
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f8fc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success: #047857;
+      --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(226,232,240,0.8);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .hero h1 { margin: 0 0 8px; font-size: 2rem; }
+    .hero p { margin: 0; color: var(--muted); line-height: 1.5; }
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 16px;
+    }
+
+    .top-bar .field { margin-bottom: 0; }
+
+    .status-line {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 6px;
+    }
+
+    .preset-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .preset-card {
+      border: 1px solid rgba(37, 99, 235, 0.16);
+      background: rgba(37, 99, 235, 0.07);
+      border-radius: 16px;
+      padding: 12px;
+      cursor: pointer;
+      color: var(--text);
+      text-align: left;
+    }
+
+    .preset-card strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .preset-card span {
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .catalog {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .catalog-item {
+      background: rgba(37, 99, 235, 0.06);
+      border: 1px solid rgba(37, 99, 235, 0.15);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .catalog-item h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .catalog-item ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2 {
+      margin: 0 0 14px;
+      font-size: 1.05rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .field { margin-bottom: 14px; }
+
+    select, input[type="text"], input[type="number"] {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font: inherit;
+      background: #fff;
+      outline: none;
+    }
+
+    select:focus, input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .radio-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: 0.2s ease;
+    }
+
+    .radio-card:hover { border-color: var(--primary); }
+    .radio-card input { margin: 0; }
+    .help { font-size: 0.84rem; color: var(--muted); margin-top: 6px; }
+
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .journey-group {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .journey-group::before {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 4px;
+      background: linear-gradient(180deg, #2563eb, #22c55e);
+    }
+
+    .journey-group + .journey-group { margin-top: 10px; }
+
+    .journey-group-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-left: 8px;
+    }
+
+    .journey-group-head h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .journey-group-head .meta {
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .group-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 10px;
+      padding-left: 8px;
+    }
+
+    .step-button {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #fff, #f8fbff);
+      border-radius: 16px;
+      padding: 14px;
+      text-align: left;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      min-height: 110px;
+    }
+
+    .step-button:hover {
+      transform: translateY(-1px);
+      border-color: var(--primary);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
+    }
+
+    .step-title { font-weight: 700; margin: 0 0 6px; }
+    .step-meta { color: var(--muted); font-size: 0.9rem; margin: 0 0 10px; }
+    .step-index {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #e0ecff;
+      color: #1d4ed8;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .toolbar .danger {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .toolbar button {
+      border: 0;
+      background: var(--primary);
+      color: white;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .toolbar button.secondary {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .output {
+      background: #0b1220;
+      color: #dbeafe;
+      border-radius: 16px;
+      padding: 14px;
+      min-height: 280px;
+      max-height: 340px;
+      overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+    }
+
+    .log-entry {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 10px 0;
+    }
+
+    .log-entry:last-child { border-bottom: 0; }
+
+    .log-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+      color: #93c5fd;
+      font-size: 0.86rem;
+    }
+
+    .log-json {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #dbeafe;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .pill {
+      background: #eef2ff;
+      color: #3730a3;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 14px;
+      line-height: 1.5;
+    }
+
+    .bonus-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .mini-grid .field { margin-bottom: 0; }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      .top-bar { grid-template-columns: 1fr; }
+      .mini-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="card top-bar">
+      <div class="field">
+        <label for="measurementId">GA4 Measurement ID</label>
+        <input id="measurementId" type="text" value="G-XXXXXXXXXX" />
+        <div class="status-line">Use <strong>Configure</strong> to reinitialise gtag.js with the value above.</div>
+      </div>
+      <div class="toolbar" style="margin:0; justify-content:flex-end;">
+        <button type="button" id="configureBtn">Configure</button>
+      </div>
+    </section>
+
+    <section class="hero">
+      <h1>Finance Hub Loan GA4 Test App</h1>
+      <p class="status-line" style="margin-top:-2px; color:#2563eb; font-weight:700;">Finance Hub GA4 Event Tester — Use with GA4 DebugView</p>
+      <p>
+        Use this single-page app to test <strong>gtag.js</strong> ecommerce-style loan journey events in GA4 DebugView.
+        Replace the Measurement ID placeholder with your sandbox ID.
+      </p>
+
+      <div class="catalog" aria-label="Loan catalog overview">
+        <div class="catalog-item">
+          <h3>Hire Loan Events</h3>
+          <ul>
+            <li>Hire Purchase customer journey event catalogue</li>
+          </ul>
+        </div>
+        <div class="catalog-item">
+          <h3>Vehicle Loan Events</h3>
+          <ul>
+            <li>Personal Use (Imported Second-Hand)</li>
+            <li>Brand New Vehicle</li>
+            <li>Commercial / Taxi</li>
+          </ul>
+        </div>
+        <div class="catalog-item">
+          <h3>Unsecured Personal Loan</h3>
+          <ul>
+            <li>Unsecured Personal Loan event catalogue</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="preset-strip" aria-label="Loan journey presets">
+        <button type="button" class="preset-card" data-preset="hire_purchase">
+          <strong>Hire Purchase</strong>
+          <span>Finance hub entry, existing customer, ecommerce source, FJD amount.</span>
+        </button>
+        <button type="button" class="preset-card" data-preset="vehicle_personal_use_imported">
+          <strong>Vehicle Loan · Personal Use (Imported Second-Hand)</strong>
+          <span>Vehicle loan subtype preset with financehub entry.</span>
+        </button>
+        <button type="button" class="preset-card" data-preset="vehicle_brand_new_vehicle">
+          <strong>Vehicle Loan · Brand New Vehicle</strong>
+          <span>Vehicle loan subtype preset with financehub entry.</span>
+        </button>
+        <button type="button" class="preset-card" data-preset="vehicle_commercial_taxi">
+          <strong>Vehicle Loan · Commercial/Taxi</strong>
+          <span>Vehicle loan subtype preset with financehub entry.</span>
+        </button>
+        <button type="button" class="preset-card" data-preset="unsecured_personal_loan">
+          <strong>Unsecured Personal Loan</strong>
+          <span>Unsecured personal loan journey with financehub entry.</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="grid">
+      <aside class="card">
+        <h2>Journey Controls</h2>
+
+        <div class="field">
+          <label for="loanPreset">Loan journey preset</label>
+          <select id="loanPreset">
+            <option value="hire_purchase">Hire Purchase</option>
+            <option value="vehicle_personal_use_imported">Vehicle Loan · Personal Use (Imported Second-Hand)</option>
+            <option value="vehicle_brand_new_vehicle">Vehicle Loan · Brand New Vehicle</option>
+            <option value="vehicle_commercial_taxi">Vehicle Loan · Commercial/Taxi</option>
+            <option value="unsecured_personal_loan">Unsecured Personal Loan</option>
+          </select>
+          <div class="help">Preset updates the loan type/subtype and default payload values.</div>
+        </div>
+
+        <div class="field">
+          <label for="loanType">Loan type</label>
+          <select id="loanType">
+            <option value="hire_purchase">hire_purchase</option>
+            <option value="vehicle_loan">vehicle_loan</option>
+            <option value="unsecured_personal_loan">unsecured_personal_loan</option>
+          </select>
+          <div class="help">Vehicle loan enables subtype selection.</div>
+        </div>
+
+        <div class="field" id="subtypeWrap" style="display:none;">
+          <label for="loanSubtype">Loan subtype</label>
+          <select id="loanSubtype">
+            <option value="personal_use_imported">personal_use_imported</option>
+            <option value="brand_new_vehicle">brand_new_vehicle</option>
+            <option value="commercial_taxi">commercial_taxi</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Customer type</label>
+          <div class="segmented">
+            <label class="radio-card"><input type="radio" name="customerType" value="new" checked> New</label>
+            <label class="radio-card"><input type="radio" name="customerType" value="existing"> Existing</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="entrySource">Entry source</label>
+          <select id="entrySource">
+            <option value="financehub">financehub</option>
+            <option value="ecommerce">ecommerce</option>
+            <option value="dashboard">dashboard</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="loanAmount">Loan amount</label>
+          <input id="loanAmount" type="number" min="0" step="0.01" placeholder="e.g. 15000" />
+        </div>
+
+        <div class="field">
+          <label for="applicationType">Application type</label>
+          <input id="applicationType" type="text" placeholder="e.g. pre_approval" />
+        </div>
+
+        <div class="field">
+          <label for="documentStatus">Document status override</label>
+          <select id="documentStatus">
+            <option value="">null (auto)</option>
+            <option value="uploaded">uploaded</option>
+          </select>
+        </div>
+
+        <div class="toolbar">
+          <button type="button" id="copyPayloadBtn" class="secondary">Copy current payload</button>
+          <button type="button" id="clearLogBtn" class="secondary">Clear log</button>
+          <button type="button" id="fireAllBtn">Fire All Sequential</button>
+          <button type="button" id="resetJourneyBtn" class="danger">Reset Journey</button>
+        </div>
+
+        <div class="pill-row" id="statePills"></div>
+
+        <p class="footer-note">
+          All events include <code>request_id</code>, <code>flow_name</code>, <code>loan_type</code>,
+          <code>loan_subtype</code>, <code>customer_type</code>, <code>entry_source</code>, and <code>currency: FJD</code>.
+        </p>
+      </aside>
+
+      <section class="card">
+        <h2>loan_step event buttons</h2>
+        <div class="steps" id="stepButtons"></div>
+      </section>
+    </section>
+
+    <section class="card" style="margin-top:20px;">
+      <h2>Bonus Events</h2>
+      <div class="bonus-grid">
+        <div class="card" style="box-shadow:none; background:#f8fbff;">
+          <h3 style="margin-top:0;">loan_document</h3>
+          <div class="mini-grid">
+            <div class="field">
+              <label for="documentType">document_type</label>
+              <input id="documentType" type="text" placeholder="tin, payslip, bank_statement" />
+            </div>
+            <div class="field">
+              <label for="loanDocumentStatus">document_status</label>
+              <select id="loanDocumentStatus">
+                <option value="uploaded">uploaded</option>
+                <option value="verified">verified</option>
+                <option value="rejected">rejected</option>
+              </select>
+            </div>
+          </div>
+          <button type="button" id="fireLoanDocumentBtn">Fire loan_document</button>
+        </div>
+
+        <div class="card" style="box-shadow:none; background:#f8fbff;">
+          <h3 style="margin-top:0;">loan_created / loan_redirect</h3>
+          <div class="toolbar">
+            <button type="button" id="fireLoanCreatedBtn">Fire loan_created</button>
+            <button type="button" id="fireLoanRedirectBtn" class="secondary">Fire loan_redirect</button>
+          </div>
+          <div class="status-line">loan_created auto-generates loan_id. loan_redirect uses the latest created loan_id.</div>
+        </div>
+
+        <div class="card" style="box-shadow:none; background:#f8fbff;">
+          <h3 style="margin-top:0;">validation_message</h3>
+          <div class="mini-grid">
+            <div class="field">
+              <label for="errorMessage">error_message</label>
+              <input id="errorMessage" type="text" placeholder="Please enter a valid amount" />
+            </div>
+            <div class="field">
+              <label for="fieldName">field_name</label>
+              <input id="fieldName" type="text" placeholder="loan_amount" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="validationStepName">step_name</label>
+            <select id="validationStepName">
+              <option value="Login/Register">Login/Register</option>
+              <option value="Verify">Verify</option>
+              <option value="Apply">Apply</option>
+              <option value="personal_information_completed">personal_information_completed</option>
+              <option value="financial_position_completed">financial_position_completed</option>
+            </select>
+          </div>
+          <button type="button" id="fireValidationBtn">Fire validation_message</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:20px;">
+      <h2>Event log</h2>
+      <div id="output" class="output">Ready.</div>
+    </section>
+  </main>
+
+  <script>
+    const FLOW_NAME = 'loan_application';
+    const DEFAULT_CURRENCY = 'FJD';
+    const DEBUG_MODE = true;
+
+    const LOAN_PRESETS = {
+      hire_purchase: {
+        loan_type: 'hire_purchase',
+        loan_subtype: null,
+        customer_type: 'existing',
+        entry_source: 'ecommerce',
+        loan_amount: 1132,
+        application_type: 'VPG / Home and Living',
+        currency: 'FJD'
+      },
+      vehicle_personal_use_imported: {
+        loan_type: 'vehicle_loan',
+        loan_subtype: 'personal_use_imported',
+        customer_type: 'existing',
+        entry_source: 'financehub',
+        loan_amount: null,
+        application_type: null,
+        currency: null
+      },
+      vehicle_brand_new_vehicle: {
+        loan_type: 'vehicle_loan',
+        loan_subtype: 'brand_new_vehicle',
+        customer_type: 'existing',
+        entry_source: 'financehub',
+        loan_amount: null,
+        application_type: null,
+        currency: null
+      },
+      vehicle_commercial_taxi: {
+        loan_type: 'vehicle_loan',
+        loan_subtype: 'commercial_taxi',
+        customer_type: 'existing',
+        entry_source: 'financehub',
+        loan_amount: null,
+        application_type: null,
+        currency: null
+      },
+      unsecured_personal_loan: {
+        loan_type: 'unsecured_personal_loan',
+        loan_subtype: null,
+        customer_type: 'existing',
+        entry_source: 'financehub',
+        loan_amount: null,
+        application_type: null,
+        currency: null
+      }
+    };
+
+    const STEP_CATALOG = [
+      { step_name: 'Login/Register', step_index: 1, category: 'Entry' },
+      { step_name: 'Verify', step_index: 2, category: 'Verification' },
+      { step_name: 'Apply', step_index: 3, category: 'Application Start' },
+      { step_name: 'tin_uploaded', step_index: 3, category: 'Document Upload', document_status: 'uploaded' },
+      { step_name: 'photo_id_uploaded', step_index: 3, category: 'Document Upload', document_status: 'uploaded' },
+      { step_name: 'recent_payslip_uploaded', step_index: 3, category: 'Document Upload', document_status: 'uploaded' },
+      { step_name: 'bank_statement_uploaded', step_index: 3, category: 'Document Upload', document_status: 'uploaded' },
+      { step_name: 'live_photo_uploaded', step_index: 3, category: 'Document Upload', document_status: 'uploaded' },
+      { step_name: 'documents_submitted', step_index: 3, category: 'Document Submission' },
+      { step_name: 'personal_information_completed', step_index: 3, category: 'Application Stage' },
+      { step_name: 'identification_completed', step_index: 3, category: 'Application Stage' },
+      { step_name: 'employment_completed', step_index: 3, category: 'Application Stage' },
+      { step_name: 'address_completed', step_index: 3, category: 'Application Stage' },
+      { step_name: 'referees_completed', step_index: 3, category: 'Application Stage' },
+      { step_name: 'capacity_assessment_completed', step_index: 3, category: 'Application Stage' },
+      { step_name: 'financial_position_completed', step_index: 3, category: 'Application Stage' },
+      { step_name: 'cart_view', step_index: 3, category: 'Review' },
+      { step_name: 'purchase', step_index: 3, category: 'Submission' }
+    ];
+
+    const CATEGORY_ORDER = ['Entry', 'Verification', 'Application Start', 'Document Upload', 'Document Submission', 'Application Stage', 'Review', 'Submission'];
+    const UPLOAD_STEPS = new Set(['tin_uploaded', 'photo_id_uploaded', 'recent_payslip_uploaded', 'bank_statement_uploaded', 'live_photo_uploaded']);
+
+    const measurementIdEl = document.getElementById('measurementId');
+    const loanPresetEl = document.getElementById('loanPreset');
+    const loanTypeEl = document.getElementById('loanType');
+    const loanSubtypeEl = document.getElementById('loanSubtype');
+    const subtypeWrapEl = document.getElementById('subtypeWrap');
+    const entrySourceEl = document.getElementById('entrySource');
+    const loanAmountEl = document.getElementById('loanAmount');
+    const applicationTypeEl = document.getElementById('applicationType');
+    const documentStatusEl = document.getElementById('documentStatus');
+    const stepButtonsEl = document.getElementById('stepButtons');
+    const outputEl = document.getElementById('output');
+    const statePillsEl = document.getElementById('statePills');
+    const documentTypeEl = document.getElementById('documentType');
+    const loanDocumentStatusEl = document.getElementById('loanDocumentStatus');
+    const errorMessageEl = document.getElementById('errorMessage');
+    const fieldNameEl = document.getElementById('fieldName');
+    const validationStepNameEl = document.getElementById('validationStepName');
+
+    let currentRequestId = uuid();
+    let currentLoanId = '';
+    let currentMeasurementId = measurementIdEl.value.trim();
+
+    function uuid() {
+      if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+        return window.crypto.randomUUID();
+      }
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getCustomerType() {
+      const checked = document.querySelector('input[name="customerType"]:checked');
+      return checked ? checked.value : 'new';
+    }
+
+    function getLoanSubtype() {
+      return loanTypeEl.value === 'vehicle_loan' ? (loanSubtypeEl.value || null) : null;
+    }
+
+    function getPresetKeyFromSelection() {
+      if (loanTypeEl.value === 'hire_purchase') return 'hire_purchase';
+      if (loanTypeEl.value === 'unsecured_personal_loan') return 'unsecured_personal_loan';
+      if (loanTypeEl.value === 'vehicle_loan') {
+        if (loanSubtypeEl.value === 'personal_use_imported') return 'vehicle_personal_use_imported';
+        if (loanSubtypeEl.value === 'brand_new_vehicle') return 'vehicle_brand_new_vehicle';
+        return 'vehicle_commercial_taxi';
+      }
+      return 'hire_purchase';
+    }
+
+    function getPresetDefaults() {
+      return LOAN_PRESETS[getPresetKeyFromSelection()] || LOAN_PRESETS.hire_purchase;
+    }
+
+    function getLoanAmount() {
+      const raw = loanAmountEl.value.trim();
+      if (raw !== '') return Number(raw);
+      return getPresetDefaults().loan_amount;
+    }
+
+    function getApplicationType() {
+      const raw = applicationTypeEl.value.trim();
+      if (raw !== '') return raw;
+      return getPresetDefaults().application_type;
+    }
+
+    function getLoanCurrency() {
+      return getPresetDefaults().currency;
+    }
+
+    function getDocumentStatus(stepName) {
+      if (documentStatusEl.value) return documentStatusEl.value;
+      return UPLOAD_STEPS.has(stepName) ? 'uploaded' : null;
+    }
+
+    function buildLoanStepPayload(stepName, stepIndex, overrides = {}) {
+      const defaults = getPresetDefaults();
+      const payload = {
+        event: 'loan_step',
+        flow_name: FLOW_NAME,
+        step_name: stepName,
+        step_index: stepIndex,
+        loan_amount: getLoanAmount(),
+        currency: getLoanCurrency(),
+        application_type: getApplicationType(),
+        request_id: currentRequestId,
+        loan_type: loanTypeEl.value,
+        loan_subtype: getLoanSubtype(),
+        customer_type: getCustomerType(),
+        entry_source: entrySourceEl.value,
+        document_status: getDocumentStatus(stepName),
+        ...overrides
+      };
+
+      if (defaults.loan_type === 'vehicle_loan' || defaults.loan_type === 'unsecured_personal_loan') {
+        payload.currency = getLoanCurrency();
+      }
+
+      return payload;
+    }
+
+    function fireGa4Event(eventName, payload) {
+      window.gtag('event', eventName, payload);
+
+      if (DEBUG_MODE) {
+        console.log(`[GA4] ${eventName}`);
+        console.log(payload);
+      }
+
+      appendLogEntry(eventName, payload);
+    }
+
+    function appendLogEntry(eventName, payload) {
+      if (outputEl.textContent === 'Ready.') {
+        outputEl.innerHTML = '';
+      }
+
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+
+      const head = document.createElement('div');
+      head.className = 'log-head';
+      const timestamp = new Date().toLocaleTimeString();
+      const stepName = payload.step_name || payload.stepName || 'n/a';
+      head.innerHTML = `<span>[${escapeHtml(timestamp)}] ${escapeHtml(eventName)}</span><span>step_name: ${escapeHtml(stepName)}</span>`;
+
+      const pre = document.createElement('pre');
+      pre.className = 'log-json';
+      pre.textContent = JSON.stringify(payload, null, 2);
+
+      entry.appendChild(head);
+      entry.appendChild(pre);
+      outputEl.appendChild(entry);
+      outputEl.scrollTop = outputEl.scrollHeight;
+    }
+
+    function resetLog() {
+      outputEl.innerHTML = 'Ready.';
+    }
+
+    function configureGtag(measurementId) {
+      currentMeasurementId = measurementId.trim();
+      window.gtag('config', currentMeasurementId, { debug_mode: true });
+      appendLogEntry('gtag_config', {
+        measurement_id: currentMeasurementId,
+        debug_mode: true,
+        request_id: currentRequestId
+      });
+    }
+
+    function updateLoanSubtypeUI() {
+      const isVehicleLoan = loanTypeEl.value === 'vehicle_loan';
+      subtypeWrapEl.style.display = isVehicleLoan ? 'block' : 'none';
+      loanSubtypeEl.disabled = !isVehicleLoan;
+      if (!isVehicleLoan) loanSubtypeEl.value = '';
+    }
+
+    function syncPresetToSelection() {
+      loanPresetEl.value = getPresetKeyFromSelection();
+    }
+
+    function applyPreset(presetKey) {
+      const preset = LOAN_PRESETS[presetKey];
+      if (!preset) return;
+
+      loanTypeEl.value = preset.loan_type;
+      loanSubtypeEl.value = preset.loan_subtype || '';
+      updateLoanSubtypeUI();
+
+      const customerRadio = document.querySelector(`input[name="customerType"][value="${preset.customer_type}"]`);
+      if (customerRadio) customerRadio.checked = true;
+
+      entrySourceEl.value = preset.entry_source;
+      loanAmountEl.value = preset.loan_amount === null ? '' : String(preset.loan_amount);
+      applicationTypeEl.value = preset.application_type === null ? '' : preset.application_type;
+      syncPresetToSelection();
+      renderStatePills();
+    }
+
+    function fireLoanStep(step) {
+      const payload = buildLoanStepPayload(step.step_name, step.step_index, {
+        document_status: step.document_status ?? getDocumentStatus(step.step_name)
+      });
+      fireGa4Event('loan_step', payload);
+    }
+
+    function fireAllSequential() {
+      let chain = Promise.resolve();
+      STEP_CATALOG.forEach(step => {
+        chain = chain.then(() => new Promise(resolve => {
+          fireLoanStep(step);
+          setTimeout(resolve, 500);
+        }));
+      });
+      return chain;
+    }
+
+    function renderStepButtons() {
+      stepButtonsEl.innerHTML = '';
+
+      CATEGORY_ORDER.forEach(category => {
+        const groupSteps = STEP_CATALOG.filter(step => step.category === category);
+        if (!groupSteps.length) return;
+
+        const group = document.createElement('div');
+        group.className = 'journey-group';
+
+        const head = document.createElement('div');
+        head.className = 'journey-group-head';
+        head.innerHTML = `<div><h3>${escapeHtml(category)}</h3><div class="meta">${groupSteps.length} event${groupSteps.length > 1 ? 's' : ''}</div></div><div class="meta">loan_step</div>`;
+
+        const buttons = document.createElement('div');
+        buttons.className = 'group-buttons';
+
+        groupSteps.forEach(step => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'step-button';
+          btn.innerHTML = `
+            <p class="step-title">${escapeHtml(step.step_name)}</p>
+            <p class="step-meta">Category: ${escapeHtml(step.category)}</p>
+            <span class="step-index">step_index ${step.step_index}</span>
+          `;
+          btn.addEventListener('click', () => fireLoanStep(step));
+          buttons.appendChild(btn);
+        });
+
+        group.appendChild(head);
+        group.appendChild(buttons);
+        stepButtonsEl.appendChild(group);
+      });
+    }
+
+    function renderStatePills() {
+      statePillsEl.innerHTML = '';
+      const pills = [
+        `request_id: ${currentRequestId}`,
+        `loan_id: ${currentLoanId || 'null'}`,
+        `loan_type: ${loanTypeEl.value}`,
+        `loan_subtype: ${getLoanSubtype() ?? 'null'}`,
+        `customer_type: ${getCustomerType()}`,
+        `entry_source: ${entrySourceEl.value}`,
+        `currency: ${getLoanCurrency() ?? 'null'}`
+      ];
+
+      pills.forEach(text => {
+        const span = document.createElement('span');
+        span.className = 'pill';
+        span.textContent = text;
+        statePillsEl.appendChild(span);
+      });
+    }
+
+    function refreshUI() {
+      updateLoanSubtypeUI();
+      renderStatePills();
+      syncPresetToSelection();
+    }
+
+    function copyCurrentPayload() {
+      const current = buildLoanStepPayload('Apply', 3);
+      navigator.clipboard.writeText(JSON.stringify(current, null, 2));
+      appendLogEntry('copy_payload', current);
+    }
+
+    function clearLog() {
+      resetLog();
+    }
+
+    function resetJourney() {
+      currentRequestId = uuid();
+      currentLoanId = '';
+      resetLog();
+      renderStatePills();
+    }
+
+    function generateLoanId() {
+      return `LN-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+    }
+
+    function fireLoanDocument() {
+      const payload = {
+        event: 'loan_document',
+        document_type: documentTypeEl.value.trim() || 'unknown',
+        document_status: loanDocumentStatusEl.value,
+        loan_type: loanTypeEl.value,
+        request_id: currentRequestId
+      };
+      fireGa4Event('loan_document', payload);
+    }
+
+    function fireLoanCreated() {
+      currentLoanId = generateLoanId();
+      const payload = {
+        event: 'loan_created',
+        loan_id: currentLoanId,
+        loan_type: loanTypeEl.value,
+        loan_subtype: getLoanSubtype(),
+        request_id: currentRequestId,
+        loan_amount: getLoanAmount(),
+        currency: getLoanCurrency()
+      };
+      fireGa4Event('loan_created', payload);
+    }
+
+    function fireLoanRedirect() {
+      if (!currentLoanId) {
+        currentLoanId = generateLoanId();
+      }
+
+      const payload = {
+        event: 'loan_redirect',
+        loan_id: currentLoanId,
+        redirect_target: 'bigcommerce',
+        loan_type: 'hire_purchase'
+      };
+      fireGa4Event('loan_redirect', payload);
+    }
+
+    function fireValidationMessage() {
+      const payload = {
+        event: 'validation_message',
+        error_message: errorMessageEl.value.trim() || 'Validation error',
+        field_name: fieldNameEl.value.trim() || 'unknown',
+        loan_type: loanTypeEl.value,
+        step_name: validationStepNameEl.value
+      };
+      fireGa4Event('validation_message', payload);
+    }
+
+    function initialize() {
+      renderStepButtons();
+      applyPreset(loanPresetEl.value);
+      configureGtag(currentMeasurementId);
+      refreshUI();
+
+      document.getElementById('configureBtn').addEventListener('click', () => {
+        configureGtag(measurementIdEl.value);
+      });
+
+      document.querySelectorAll('.preset-card').forEach(card => {
+        card.addEventListener('click', () => {
+          applyPreset(card.dataset.preset);
+        });
+      });
+
+      loanPresetEl.addEventListener('change', () => applyPreset(loanPresetEl.value));
+      loanTypeEl.addEventListener('change', () => {
+        updateLoanSubtypeUI();
+        syncPresetToSelection();
+        renderStatePills();
+      });
+      loanSubtypeEl.addEventListener('change', () => {
+        syncPresetToSelection();
+        renderStatePills();
+      });
+
+      entrySourceEl.addEventListener('change', renderStatePills);
+      document.querySelectorAll('input[name="customerType"]').forEach(input => input.addEventListener('change', renderStatePills));
+      loanAmountEl.addEventListener('input', renderStatePills);
+      applicationTypeEl.addEventListener('input', renderStatePills);
+      documentStatusEl.addEventListener('change', renderStatePills);
+
+      document.getElementById('copyPayloadBtn').addEventListener('click', copyCurrentPayload);
+      document.getElementById('clearLogBtn').addEventListener('click', clearLog);
+      document.getElementById('fireAllBtn').addEventListener('click', fireAllSequential);
+      document.getElementById('resetJourneyBtn').addEventListener('click', resetJourney);
+      document.getElementById('fireLoanDocumentBtn').addEventListener('click', fireLoanDocument);
+      document.getElementById('fireLoanCreatedBtn').addEventListener('click', fireLoanCreated);
+      document.getElementById('fireLoanRedirectBtn').addEventListener('click', fireLoanRedirect);
+      document.getElementById('fireValidationBtn').addEventListener('click', fireValidationMessage);
+    }
+
+    initialize();
+  </script>
+</body>
+</html>
