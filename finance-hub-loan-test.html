@@ -612,15 +612,16 @@
         </div>
 
         <div class="card" style="box-shadow:none; background:#f8fbff;">
-          <h3 style="margin-top:0;">loan_approved</h3>
-          <div class="status-line">Publishes <strong>loan_step</strong> with step_name <strong>loan_approved</strong>.</div>
-          <button type="button" id="fireLoanApprovedBtn">Fire loan_approved</button>
-        </div>
-
-        <div class="card" style="box-shadow:none; background:#f8fbff;">
-          <h3 style="margin-top:0;">loan_declined</h3>
-          <div class="status-line">Publishes <strong>loan_step</strong> with step_name <strong>loan_declined</strong>.</div>
-          <button type="button" id="fireLoanDeclinedBtn">Fire loan_declined</button>
+          <h3 style="margin-top:0;">loan decision (approve / declined)</h3>
+          <div class="field">
+            <label for="loanDecisionStepName">Decision</label>
+            <select id="loanDecisionStepName">
+              <option value="loan_approved">loan_approved</option>
+              <option value="loan_declined">loan_declined</option>
+            </select>
+          </div>
+          <div class="status-line">Publishes <strong>loan_step</strong> for the selected decision with the same <strong>request_id</strong> and <strong>loan_id</strong>.</div>
+          <button type="button" id="fireLoanDecisionBtn">Fire selected decision</button>
         </div>
       </div>
     </section>
@@ -729,6 +730,7 @@
     const errorMessageEl = document.getElementById('errorMessage');
     const fieldNameEl = document.getElementById('fieldName');
     const validationStepNameEl = document.getElementById('validationStepName');
+    const loanDecisionStepNameEl = document.getElementById('loanDecisionStepName');
 
     let currentRequestId = uuid();
     let currentLoanId = '';
@@ -1085,23 +1087,13 @@
       fireGa4Event('loan_step', payload);
     }
 
-    function fireLoanApproved() {
+    function fireLoanDecision() {
       if (!currentLoanId) {
         currentLoanId = generateLoanId();
       }
 
-      const payload = buildLoanStepPayload('loan_approved', 3, {
-        loan_id: currentLoanId
-      });
-      fireGa4Event('loan_step', payload);
-    }
-
-    function fireLoanDeclined() {
-      if (!currentLoanId) {
-        currentLoanId = generateLoanId();
-      }
-
-      const payload = buildLoanStepPayload('loan_declined', 3, {
+      const selectedDecision = loanDecisionStepNameEl.value || 'loan_approved';
+      const payload = buildLoanStepPayload(selectedDecision, 3, {
         loan_id: currentLoanId
       });
       fireGa4Event('loan_step', payload);
@@ -1150,8 +1142,7 @@
       document.getElementById('fireValidationBtn').addEventListener('click', fireValidationMessage);
       document.getElementById('fireDocumentsVerifiedBtn').addEventListener('click', fireDocumentsVerified);
       document.getElementById('fireWaitingCustomerReplyBtn').addEventListener('click', fireWaitingForCustomerReply);
-      document.getElementById('fireLoanApprovedBtn').addEventListener('click', fireLoanApproved);
-      document.getElementById('fireLoanDeclinedBtn').addEventListener('click', fireLoanDeclined);
+      document.getElementById('fireLoanDecisionBtn').addEventListener('click', fireLoanDecision);
     }
 
     initialize();
