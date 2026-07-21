@@ -776,7 +776,6 @@
     function buildLoanStepPayload(stepName, stepIndex, overrides = {}) {
       const defaults = getPresetDefaults();
       const payload = {
-        event: 'loan_step',
         flow_name: FLOW_NAME,
         step_name: stepName,
         step_index: stepIndex,
@@ -800,9 +799,12 @@
     }
 
     function fireGa4Event(eventName, payload) {
+      const cleanPayload = { ...payload };
+      delete cleanPayload.event;
+
       window.dataLayer.push({
         event: eventName,
-        ...payload
+        ...cleanPayload
       });
 
       if (DEBUG_MODE) {
@@ -843,6 +845,12 @@
 
     function configureGtag(measurementId) {
       currentMeasurementId = measurementId.trim();
+      window.dataLayer.push({
+        event: 'gtm_config',
+        gtm_container_id: currentMeasurementId,
+        debug_mode: true,
+        request_id: currentRequestId
+      });
       appendLogEntry('gtm_config', {
         gtm_container_id: currentMeasurementId,
         debug_mode: true,
@@ -982,7 +990,6 @@
 
     function fireLoanDocument() {
       const payload = {
-        event: 'loan_document',
         document_type: documentTypeEl.value.trim() || 'unknown',
         document_status: loanDocumentStatusEl.value,
         loan_type: loanTypeEl.value,
@@ -994,7 +1001,6 @@
     function fireLoanCreated() {
       currentLoanId = generateLoanId();
       const payload = {
-        event: 'loan_created',
         loan_id: currentLoanId,
         loan_type: loanTypeEl.value,
         loan_subtype: getLoanSubtype(),
@@ -1011,7 +1017,6 @@
       }
 
       const payload = {
-        event: 'loan_redirect',
         loan_id: currentLoanId,
         redirect_target: 'bigcommerce',
         loan_type: 'hire_purchase'
@@ -1021,7 +1026,6 @@
 
     function fireValidationMessage() {
       const payload = {
-        event: 'validation_message',
         error_message: errorMessageEl.value.trim() || 'Validation error',
         field_name: fieldNameEl.value.trim() || 'unknown',
         loan_type: loanTypeEl.value,
