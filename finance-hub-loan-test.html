@@ -928,10 +928,28 @@
         ? getSelectedLoanDecision()
         : step.step_name;
 
+      const stepNeedsLoanId = new Set([
+        'document_verification_in_process',
+        'waiting_for_customer_reply',
+        'documents_verified',
+        'loan_approved',
+        'loan_declined'
+      ]).has(resolvedStepName);
+
+      if (stepNeedsLoanId && !currentLoanId) {
+        currentLoanId = generateLoanId();
+      }
+
       const payload = buildLoanStepPayload(resolvedStepName, step.step_index, {
-        document_status: step.document_status ?? getDocumentStatus(step.step_name)
+        document_status: step.document_status ?? getDocumentStatus(step.step_name),
+        ...(stepNeedsLoanId ? { loan_id: currentLoanId } : {})
       });
+
       fireGa4Event('loan_step', payload);
+
+      if (stepNeedsLoanId) {
+        renderStatePills();
+      }
     }
 
     function fireAllSequential() {
