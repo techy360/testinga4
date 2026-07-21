@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Finance Hub Loan GA4 Test App</title>
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X9PH9TGTW8"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-X9PH9TGTW8', { debug_mode: true });
-  </script>
+  <!-- Google Tag Manager -->
+  <script>(function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({
+        'gtm.start': new Date().getTime(), event: 'gtm.js'
+      }); var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-P33XB7GB');</script>
+  <!-- End Google Tag Manager -->
 
   <style>
     :root {
@@ -380,12 +381,16 @@
   </style>
 </head>
 <body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P33XB7GB"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
   <main class="container">
     <section class="card top-bar">
       <div class="field">
-        <label for="measurementId">GA4 Measurement ID</label>
-        <input id="measurementId" type="text" value="G-X9PH9TGTW8" />
-        <div class="status-line">Use <strong>Configure</strong> to reinitialise gtag.js with the value above.</div>
+        <label for="measurementId">GTM Container ID</label>
+        <input id="measurementId" type="text" value="GTM-P33XB7GB" />
+        <div class="status-line">Use <strong>Configure</strong> to log the active GTM container ID shown above.</div>
       </div>
       <div class="toolbar" style="margin:0; justify-content:flex-end;">
         <button type="button" id="configureBtn">Configure</button>
@@ -396,8 +401,8 @@
       <h1>Finance Hub Loan GA4 Test App</h1>
       <p class="status-line" style="margin-top:-2px; color:#2563eb; font-weight:700;">Finance Hub GA4 Event Tester — Use with GA4 DebugView</p>
       <p>
-        Use this single-page app to test <strong>gtag.js</strong> ecommerce-style loan journey events in GA4 DebugView.
-        Replace the Measurement ID placeholder with your sandbox ID.
+        Use this single-page app to test ecommerce-style loan journey events through <strong>Google Tag Manager</strong>.
+        The page is configured with container ID <strong>GTM-P33XB7GB</strong>.
       </p>
 
       <div class="catalog" aria-label="Loan catalog overview">
@@ -701,6 +706,8 @@
     let currentLoanId = '';
     let currentMeasurementId = measurementIdEl.value.trim();
 
+    window.dataLayer = window.dataLayer || [];
+
     function uuid() {
       if (window.crypto && typeof window.crypto.randomUUID === 'function') {
         return window.crypto.randomUUID();
@@ -793,10 +800,13 @@
     }
 
     function fireGa4Event(eventName, payload) {
-      window.gtag('event', eventName, payload);
+      window.dataLayer.push({
+        event: eventName,
+        ...payload
+      });
 
       if (DEBUG_MODE) {
-        console.log(`[GA4] ${eventName}`);
+        console.log(`[GTM] ${eventName}`);
         console.log(payload);
       }
 
@@ -833,9 +843,8 @@
 
     function configureGtag(measurementId) {
       currentMeasurementId = measurementId.trim();
-      window.gtag('config', currentMeasurementId, { debug_mode: true });
-      appendLogEntry('gtag_config', {
-        measurement_id: currentMeasurementId,
+      appendLogEntry('gtm_config', {
+        gtm_container_id: currentMeasurementId,
         debug_mode: true,
         request_id: currentRequestId
       });
