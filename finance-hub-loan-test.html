@@ -522,6 +522,15 @@
           </select>
         </div>
 
+        <div class="field">
+          <label for="loanDecisionType">Final loan decision</label>
+          <select id="loanDecisionType">
+            <option value="loan_approved">loan_approved</option>
+            <option value="loan_declined">loan_declined</option>
+          </select>
+          <div class="help">Used for the final submission decision step and decision trigger.</div>
+        </div>
+
         <div class="toolbar">
           <button type="button" id="copyPayloadBtn" class="secondary">Copy current payload</button>
           <button type="button" id="clearLogBtn" class="secondary">Clear log</button>
@@ -613,14 +622,7 @@
 
         <div class="card" style="box-shadow:none; background:#f8fbff;">
           <h3 style="margin-top:0;">loan decision (approve / declined)</h3>
-          <div class="field">
-            <label for="loanDecisionStepName">Decision</label>
-            <select id="loanDecisionStepName">
-              <option value="loan_approved">loan_approved</option>
-              <option value="loan_declined">loan_declined</option>
-            </select>
-          </div>
-          <div class="status-line">Publishes <strong>loan_step</strong> for the selected decision with the same <strong>request_id</strong> and <strong>loan_id</strong>.</div>
+          <div class="status-line">Publishes <strong>loan_step</strong> for the selected top control decision with the same <strong>request_id</strong> and <strong>loan_id</strong>.</div>
           <button type="button" id="fireLoanDecisionBtn">Fire selected decision</button>
         </div>
       </div>
@@ -702,12 +704,12 @@
       { step_name: 'referees_completed', step_index: 3, category: 'Application Stage' },
       { step_name: 'capacity_assessment_completed', step_index: 3, category: 'Application Stage' },
       { step_name: 'financial_position_completed', step_index: 3, category: 'Application Stage' },
-      { step_name: 'documents_verified', step_index: 3, category: 'Application Stage', document_status: 'verified' },
-      { step_name: 'waiting_for_customer_reply', step_index: 3, category: 'Application Stage' },
       { step_name: 'cart_view', step_index: 3, category: 'Review' },
       { step_name: 'purchase', step_index: 3, category: 'Submission' },
-      { step_name: 'loan_approved', step_index: 3, category: 'Submission' },
-      { step_name: 'loan_declined', step_index: 3, category: 'Submission' }
+      { step_name: 'document_verification_in_process', step_index: 3, category: 'Submission' },
+      { step_name: 'waiting_for_customer_reply', step_index: 3, category: 'Submission' },
+      { step_name: 'documents_verified', step_index: 3, category: 'Submission', document_status: 'verified' },
+      { step_name: 'loan_decision', step_index: 3, category: 'Submission' }
     ];
 
     const CATEGORY_ORDER = ['Entry', 'Verification', 'Application Start', 'Document Upload', 'Document Submission', 'Application Stage', 'Review', 'Submission'];
@@ -722,6 +724,7 @@
     const loanAmountEl = document.getElementById('loanAmount');
     const applicationTypeEl = document.getElementById('applicationType');
     const documentStatusEl = document.getElementById('documentStatus');
+    const loanDecisionTypeEl = document.getElementById('loanDecisionType');
     const stepButtonsEl = document.getElementById('stepButtons');
     const outputEl = document.getElementById('output');
     const statePillsEl = document.getElementById('statePills');
@@ -730,7 +733,6 @@
     const errorMessageEl = document.getElementById('errorMessage');
     const fieldNameEl = document.getElementById('fieldName');
     const validationStepNameEl = document.getElementById('validationStepName');
-    const loanDecisionStepNameEl = document.getElementById('loanDecisionStepName');
 
     let currentRequestId = uuid();
     let currentLoanId = '';
@@ -801,6 +803,10 @@
     function getDocumentStatus(stepName) {
       if (documentStatusEl.value) return documentStatusEl.value;
       return UPLOAD_STEPS.has(stepName) ? 'uploaded' : null;
+    }
+
+    function getSelectedLoanDecision() {
+      return loanDecisionTypeEl.value === 'loan_declined' ? 'loan_declined' : 'loan_approved';
     }
 
     function buildLoanStepPayload(stepName, stepIndex, overrides = {}) {
@@ -918,7 +924,11 @@
     }
 
     function fireLoanStep(step) {
-      const payload = buildLoanStepPayload(step.step_name, step.step_index, {
+      const resolvedStepName = step.step_name === 'loan_decision'
+        ? getSelectedLoanDecision()
+        : step.step_name;
+
+      const payload = buildLoanStepPayload(resolvedStepName, step.step_index, {
         document_status: step.document_status ?? getDocumentStatus(step.step_name)
       });
       fireGa4Event('loan_step', payload);
@@ -956,8 +966,11 @@
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'step-button';
+          const displayStepName = step.step_name === 'loan_decision'
+            ? `loan_decision (${getSelectedLoanDecision()})`
+            : step.step_name;
           btn.innerHTML = `
-            <p class="step-title">${escapeHtml(step.step_name)}</p>
+            <p class="step-title">${escapeHtml(displayStepName)}</p>
             <p class="step-meta">Category: ${escapeHtml(step.category)}</p>
             <span class="step-index">step_index ${step.step_index}</span>
           `;
@@ -1092,7 +1105,7 @@
         currentLoanId = generateLoanId();
       }
 
-      const selectedDecision = loanDecisionStepNameEl.value || 'loan_approved';
+      const selectedDecision = getSelectedLoanDecision();
       const payload = buildLoanStepPayload(selectedDecision, 3, {
         loan_id: currentLoanId
       });
@@ -1131,6 +1144,9 @@
       loanAmountEl.addEventListener('input', renderStatePills);
       applicationTypeEl.addEventListener('input', renderStatePills);
       documentStatusEl.addEventListener('change', renderStatePills);
+      loanDecisionTypeEl.addEventListener('change', () => {
+        renderStepButtons();
+      });
 
       document.getElementById('copyPayloadBtn').addEventListener('click', copyCurrentPayload);
       document.getElementById('clearLogBtn').addEventListener('click', clearLog);
