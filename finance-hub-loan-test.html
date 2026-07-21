@@ -598,6 +598,30 @@
           </div>
           <button type="button" id="fireValidationBtn">Fire validation_message</button>
         </div>
+
+        <div class="card" style="box-shadow:none; background:#f8fbff;">
+          <h3 style="margin-top:0;">documents_verified</h3>
+          <div class="status-line">Publishes <strong>loan_step</strong> with step_name <strong>documents_verified</strong>.</div>
+          <button type="button" id="fireDocumentsVerifiedBtn">Fire documents_verified</button>
+        </div>
+
+        <div class="card" style="box-shadow:none; background:#f8fbff;">
+          <h3 style="margin-top:0;">waiting_for_customer_reply</h3>
+          <div class="status-line">Publishes <strong>loan_step</strong> with step_name <strong>waiting_for_customer_reply</strong>.</div>
+          <button type="button" id="fireWaitingCustomerReplyBtn">Fire waiting_for_customer_reply</button>
+        </div>
+
+        <div class="card" style="box-shadow:none; background:#f8fbff;">
+          <h3 style="margin-top:0;">loan_approved</h3>
+          <div class="status-line">Publishes <strong>loan_step</strong> with step_name <strong>loan_approved</strong>.</div>
+          <button type="button" id="fireLoanApprovedBtn">Fire loan_approved</button>
+        </div>
+
+        <div class="card" style="box-shadow:none; background:#f8fbff;">
+          <h3 style="margin-top:0;">loan_declined</h3>
+          <div class="status-line">Publishes <strong>loan_step</strong> with step_name <strong>loan_declined</strong>.</div>
+          <button type="button" id="fireLoanDeclinedBtn">Fire loan_declined</button>
+        </div>
       </div>
     </section>
 
@@ -677,8 +701,12 @@
       { step_name: 'referees_completed', step_index: 3, category: 'Application Stage' },
       { step_name: 'capacity_assessment_completed', step_index: 3, category: 'Application Stage' },
       { step_name: 'financial_position_completed', step_index: 3, category: 'Application Stage' },
+      { step_name: 'documents_verified', step_index: 3, category: 'Application Stage', document_status: 'verified' },
+      { step_name: 'waiting_for_customer_reply', step_index: 3, category: 'Application Stage' },
       { step_name: 'cart_view', step_index: 3, category: 'Review' },
-      { step_name: 'purchase', step_index: 3, category: 'Submission' }
+      { step_name: 'purchase', step_index: 3, category: 'Submission' },
+      { step_name: 'loan_approved', step_index: 3, category: 'Submission' },
+      { step_name: 'loan_declined', step_index: 3, category: 'Submission' }
     ];
 
     const CATEGORY_ORDER = ['Entry', 'Verification', 'Application Start', 'Document Upload', 'Document Submission', 'Application Stage', 'Review', 'Submission'];
@@ -1034,6 +1062,51 @@
       fireGa4Event('validation_message', payload);
     }
 
+    function fireDocumentsVerified() {
+      if (!currentLoanId) {
+        currentLoanId = generateLoanId();
+      }
+
+      const payload = buildLoanStepPayload('documents_verified', 3, {
+        document_status: 'verified',
+        loan_id: currentLoanId
+      });
+      fireGa4Event('loan_step', payload);
+    }
+
+    function fireWaitingForCustomerReply() {
+      if (!currentLoanId) {
+        currentLoanId = generateLoanId();
+      }
+
+      const payload = buildLoanStepPayload('waiting_for_customer_reply', 3, {
+        loan_id: currentLoanId
+      });
+      fireGa4Event('loan_step', payload);
+    }
+
+    function fireLoanApproved() {
+      if (!currentLoanId) {
+        currentLoanId = generateLoanId();
+      }
+
+      const payload = buildLoanStepPayload('loan_approved', 3, {
+        loan_id: currentLoanId
+      });
+      fireGa4Event('loan_step', payload);
+    }
+
+    function fireLoanDeclined() {
+      if (!currentLoanId) {
+        currentLoanId = generateLoanId();
+      }
+
+      const payload = buildLoanStepPayload('loan_declined', 3, {
+        loan_id: currentLoanId
+      });
+      fireGa4Event('loan_step', payload);
+    }
+
     function initialize() {
       renderStepButtons();
       applyPreset(loanPresetEl.value);
@@ -1075,6 +1148,10 @@
       document.getElementById('fireLoanCreatedBtn').addEventListener('click', fireLoanCreated);
       document.getElementById('fireLoanRedirectBtn').addEventListener('click', fireLoanRedirect);
       document.getElementById('fireValidationBtn').addEventListener('click', fireValidationMessage);
+      document.getElementById('fireDocumentsVerifiedBtn').addEventListener('click', fireDocumentsVerified);
+      document.getElementById('fireWaitingCustomerReplyBtn').addEventListener('click', fireWaitingForCustomerReply);
+      document.getElementById('fireLoanApprovedBtn').addEventListener('click', fireLoanApproved);
+      document.getElementById('fireLoanDeclinedBtn').addEventListener('click', fireLoanDeclined);
     }
 
     initialize();
