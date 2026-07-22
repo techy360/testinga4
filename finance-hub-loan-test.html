@@ -515,13 +515,13 @@
         </div>
 
         <div class="field">
-          <label for="applicantEmail">Applicant email</label>
-          <input id="applicantEmail" type="text" placeholder="auto-generated unique email" />
+          <label for="email">Email</label>
+          <input id="email" type="text" placeholder="auto-generated unique email" />
         </div>
 
         <div class="field">
-          <label for="applicantTin">Applicant TIN</label>
-          <input id="applicantTin" type="text" placeholder="auto-generated unique TIN" />
+          <label for="tin">TIN</label>
+          <input id="tin" type="text" placeholder="auto-generated unique TIN" />
         </div>
 
         <div class="field">
@@ -750,8 +750,8 @@
     const errorMessageEl = document.getElementById('errorMessage');
     const fieldNameEl = document.getElementById('fieldName');
     const validationStepNameEl = document.getElementById('validationStepName');
-    const applicantEmailEl = document.getElementById('applicantEmail');
-    const applicantTinEl = document.getElementById('applicantTin');
+    const emailEl = document.getElementById('email');
+    const tinEl = document.getElementById('tin');
 
     let currentRequestId = uuid();
     let currentLoanId = '';
@@ -804,8 +804,8 @@
         // generate fresh unique applicant identifiers for this request context
         currentEmail = generateEmail();
         currentTin = generateTin();
-        if (applicantEmailEl) applicantEmailEl.value = currentEmail;
-        if (applicantTinEl) applicantTinEl.value = currentTin;
+        if (emailEl) emailEl.value = currentEmail;
+        if (tinEl) tinEl.value = currentTin;
       }
       renderStatePills();
     }
@@ -870,8 +870,8 @@
         currency: getLoanCurrency(),
         application_type: getApplicationType(),
         request_id: currentRequestId,
-        applicant_email: currentEmail,
-        applicant_tin: currentTin,
+        email: currentEmail,
+        tin: currentTin,
         loan_type: loanTypeEl.value,
         loan_subtype: getLoanSubtype(),
         customer_type: getCustomerType(),
@@ -1094,8 +1094,8 @@
       // regenerate identifiers
       currentEmail = generateEmail();
       currentTin = generateTin();
-      if (applicantEmailEl) applicantEmailEl.value = currentEmail;
-      if (applicantTinEl) applicantTinEl.value = currentTin;
+      if (emailEl) emailEl.value = currentEmail;
+      if (tinEl) tinEl.value = currentTin;
       resetLog();
       renderStatePills();
     }
@@ -1110,8 +1110,8 @@
         document_status: loanDocumentStatusEl.value,
         loan_type: loanTypeEl.value,
         request_id: currentRequestId,
-        applicant_email: currentEmail,
-        applicant_tin: currentTin
+        email: currentEmail,
+        tin: currentTin
       };
       fireGa4Event('loan_document', payload);
     }
@@ -1123,8 +1123,8 @@
         loan_type: loanTypeEl.value,
         loan_subtype: getLoanSubtype(),
         request_id: currentRequestId,
-        applicant_email: currentEmail,
-        applicant_tin: currentTin,
+        email: currentEmail,
+        tin: currentTin,
         loan_amount: getLoanAmount(),
         currency: getLoanCurrency()
       };
@@ -1140,8 +1140,8 @@
         loan_id: currentLoanId,
         redirect_target: 'bigcommerce',
         loan_type: 'hire_purchase',
-        applicant_email: currentEmail,
-        applicant_tin: currentTin
+        email: currentEmail,
+        tin: currentTin
       };
       fireGa4Event('loan_redirect', payload);
     }
@@ -1196,10 +1196,10 @@
       applyPreset(loanPresetEl.value);
       currentLoanSignature = getActiveLoanSignature();
       // ensure we have initial applicant identifiers
-      currentEmail = applicantEmailEl && applicantEmailEl.value ? applicantEmailEl.value : generateEmail();
-      currentTin = applicantTinEl && applicantTinEl.value ? applicantTinEl.value : generateTin();
-      if (applicantEmailEl) applicantEmailEl.value = currentEmail;
-      if (applicantTinEl) applicantTinEl.value = currentTin;
+      currentEmail = emailEl && emailEl.value ? emailEl.value : generateEmail();
+      currentTin = tinEl && tinEl.value ? tinEl.value : generateTin();
+      if (emailEl) emailEl.value = currentEmail;
+      if (tinEl) tinEl.value = currentTin;
       configureGtag(currentMeasurementId);
       refreshUI();
 
@@ -1233,8 +1233,8 @@
         renderStepButtons();
       });
 
-      if (applicantEmailEl) applicantEmailEl.addEventListener('input', () => { currentEmail = applicantEmailEl.value.trim(); renderStatePills(); });
-      if (applicantTinEl) applicantTinEl.addEventListener('input', () => { currentTin = applicantTinEl.value.trim(); renderStatePills(); });
+      if (emailEl) emailEl.addEventListener('input', () => { currentEmail = emailEl.value.trim(); renderStatePills(); });
+      if (tinEl) tinEl.addEventListener('input', () => { currentTin = tinEl.value.trim(); renderStatePills(); });
 
       document.getElementById('copyPayloadBtn').addEventListener('click', copyCurrentPayload);
       document.getElementById('clearLogBtn').addEventListener('click', clearLog);
