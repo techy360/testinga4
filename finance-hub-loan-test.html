@@ -714,6 +714,13 @@
 
     const CATEGORY_ORDER = ['Entry', 'Verification', 'Application Start', 'Document Upload', 'Document Submission', 'Application Stage', 'Review', 'Submission'];
     const UPLOAD_STEPS = new Set(['tin_uploaded', 'photo_id_uploaded', 'recent_payslip_uploaded', 'bank_statement_uploaded', 'live_photo_uploaded']);
+    const LOAN_ID_STEP_NAMES = new Set([
+      'document_verification_in_process',
+      'waiting_for_customer_reply',
+      'documents_verified',
+      'loan_approved',
+      'loan_declined'
+    ]);
 
     const measurementIdEl = document.getElementById('measurementId');
     const loanPresetEl = document.getElementById('loanPreset');
@@ -943,13 +950,7 @@
         ? getSelectedLoanDecision()
         : step.step_name;
 
-      const stepNeedsLoanId = new Set([
-        'document_verification_in_process',
-        'waiting_for_customer_reply',
-        'documents_verified',
-        'loan_approved',
-        'loan_declined'
-      ]).has(resolvedStepName);
+      const stepNeedsLoanId = LOAN_ID_STEP_NAMES.has(resolvedStepName);
 
       if (stepNeedsLoanId && !currentLoanId) {
         currentLoanId = generateLoanId();
@@ -957,7 +958,7 @@
 
       const payload = buildLoanStepPayload(resolvedStepName, step.step_index, {
         document_status: step.document_status ?? getDocumentStatus(step.step_name),
-        ...(stepNeedsLoanId ? { loan_id: currentLoanId } : {})
+        ...(stepNeedsLoanId ? { loan_id: currentLoanId } : { loan_id: undefined })
       });
 
       fireGa4Event('loan_step', payload);
