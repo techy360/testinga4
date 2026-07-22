@@ -515,6 +515,16 @@
         </div>
 
         <div class="field">
+          <label for="applicantEmail">Applicant email</label>
+          <input id="applicantEmail" type="text" placeholder="auto-generated unique email" />
+        </div>
+
+        <div class="field">
+          <label for="applicantTin">Applicant TIN</label>
+          <input id="applicantTin" type="text" placeholder="auto-generated unique TIN" />
+        </div>
+
+        <div class="field">
           <label for="documentStatus">Document status override</label>
           <select id="documentStatus">
             <option value="">null (auto)</option>
@@ -740,11 +750,15 @@
     const errorMessageEl = document.getElementById('errorMessage');
     const fieldNameEl = document.getElementById('fieldName');
     const validationStepNameEl = document.getElementById('validationStepName');
+    const applicantEmailEl = document.getElementById('applicantEmail');
+    const applicantTinEl = document.getElementById('applicantTin');
 
     let currentRequestId = uuid();
     let currentLoanId = '';
     let currentMeasurementId = measurementIdEl.value.trim();
     let currentLoanSignature = '';
+    let currentEmail = '';
+    let currentTin = '';
 
     window.dataLayer = window.dataLayer || [];
 
@@ -787,8 +801,23 @@
         currentRequestId = uuid();
         currentLoanId = '';
         currentLoanSignature = nextSignature;
+        // generate fresh unique applicant identifiers for this request context
+        currentEmail = generateEmail();
+        currentTin = generateTin();
+        if (applicantEmailEl) applicantEmailEl.value = currentEmail;
+        if (applicantTinEl) applicantTinEl.value = currentTin;
       }
       renderStatePills();
+    }
+
+    function generateEmail() {
+      const short = Date.now().toString(36).slice(-6) + Math.random().toString(36).slice(2,6);
+      return `user+${short}@example.com`;
+    }
+
+    function generateTin() {
+      const num = Math.floor(100000000 + Math.random() * 900000000); // 9-digit
+      return `TIN-${num}`;
     }
 
     function getPresetKeyFromSelection() {
@@ -841,6 +870,8 @@
         currency: getLoanCurrency(),
         application_type: getApplicationType(),
         request_id: currentRequestId,
+        applicant_email: currentEmail,
+        applicant_tin: currentTin,
         loan_type: loanTypeEl.value,
         loan_subtype: getLoanSubtype(),
         customer_type: getCustomerType(),
@@ -1027,7 +1058,9 @@
         `loan_subtype: ${getLoanSubtype() ?? 'null'}`,
         `customer_type: ${getCustomerType()}`,
         `entry_source: ${entrySourceEl.value}`,
-        `currency: ${getLoanCurrency() ?? 'null'}`
+        `currency: ${getLoanCurrency() ?? 'null'}`,
+        `email: ${currentEmail || 'null'}`,
+        `tin: ${currentTin || 'null'}`
       ];
 
       pills.forEach(text => {
@@ -1058,6 +1091,11 @@
       currentRequestId = uuid();
       currentLoanId = '';
       currentLoanSignature = getActiveLoanSignature();
+      // regenerate identifiers
+      currentEmail = generateEmail();
+      currentTin = generateTin();
+      if (applicantEmailEl) applicantEmailEl.value = currentEmail;
+      if (applicantTinEl) applicantTinEl.value = currentTin;
       resetLog();
       renderStatePills();
     }
@@ -1071,7 +1109,9 @@
         document_type: documentTypeEl.value.trim() || 'unknown',
         document_status: loanDocumentStatusEl.value,
         loan_type: loanTypeEl.value,
-        request_id: currentRequestId
+        request_id: currentRequestId,
+        applicant_email: currentEmail,
+        applicant_tin: currentTin
       };
       fireGa4Event('loan_document', payload);
     }
@@ -1083,6 +1123,8 @@
         loan_type: loanTypeEl.value,
         loan_subtype: getLoanSubtype(),
         request_id: currentRequestId,
+        applicant_email: currentEmail,
+        applicant_tin: currentTin,
         loan_amount: getLoanAmount(),
         currency: getLoanCurrency()
       };
@@ -1097,7 +1139,9 @@
       const payload = {
         loan_id: currentLoanId,
         redirect_target: 'bigcommerce',
-        loan_type: 'hire_purchase'
+        loan_type: 'hire_purchase',
+        applicant_email: currentEmail,
+        applicant_tin: currentTin
       };
       fireGa4Event('loan_redirect', payload);
     }
@@ -1151,6 +1195,11 @@
       renderStepButtons();
       applyPreset(loanPresetEl.value);
       currentLoanSignature = getActiveLoanSignature();
+      // ensure we have initial applicant identifiers
+      currentEmail = applicantEmailEl && applicantEmailEl.value ? applicantEmailEl.value : generateEmail();
+      currentTin = applicantTinEl && applicantTinEl.value ? applicantTinEl.value : generateTin();
+      if (applicantEmailEl) applicantEmailEl.value = currentEmail;
+      if (applicantTinEl) applicantTinEl.value = currentTin;
       configureGtag(currentMeasurementId);
       refreshUI();
 
@@ -1183,6 +1232,9 @@
       loanDecisionTypeEl.addEventListener('change', () => {
         renderStepButtons();
       });
+
+      if (applicantEmailEl) applicantEmailEl.addEventListener('input', () => { currentEmail = applicantEmailEl.value.trim(); renderStatePills(); });
+      if (applicantTinEl) applicantTinEl.addEventListener('input', () => { currentTin = applicantTinEl.value.trim(); renderStatePills(); });
 
       document.getElementById('copyPayloadBtn').addEventListener('click', copyCurrentPayload);
       document.getElementById('clearLogBtn').addEventListener('click', clearLog);
